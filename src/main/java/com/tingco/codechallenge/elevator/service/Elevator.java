@@ -1,4 +1,6 @@
-package com.tingco.codechallenge.elevator.api;
+package com.tingco.codechallenge.elevator.service;
+
+import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 
 /**
  * Interface for an elevator object.
@@ -6,21 +8,14 @@ package com.tingco.codechallenge.elevator.api;
  * @author Sven Wesley
  *
  */
-interface Elevator {
-
-    /**
-     * Enumeration for describing elevator's direction.
-     */
-    enum Direction {
-        UP, DOWN, NONE
-    }
+public interface Elevator {
 
     /**
      * Tells which direction is the elevator going in.
      *
      * @return Direction Enumeration value describing the direction.
      */
-    Direction getDirection();
+    ElevatorDirection getDirection();
 
     /**
      * If the elevator is moving. This is the target floor.

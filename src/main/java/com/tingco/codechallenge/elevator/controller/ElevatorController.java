@@ -1,4 +1,4 @@
-package com.tingco.codechallenge.elevator.resources;
+package com.tingco.codechallenge.elevator.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/rest/v1")
-public final class ElevatorControllerEndPoints {
+public final class ElevatorController {
 
     /**
      * Ping service to test if we are alive.

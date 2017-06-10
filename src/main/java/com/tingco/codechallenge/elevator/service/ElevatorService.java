@@ -1,4 +1,4 @@
-package com.tingco.codechallenge.elevator.api;
+package com.tingco.codechallenge.elevator.service;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * @author Sven Wesley
  *
  */
-interface ElevatorController {
+interface ElevatorService {
 
     /**
      * Request an elevator to the specified floor.
