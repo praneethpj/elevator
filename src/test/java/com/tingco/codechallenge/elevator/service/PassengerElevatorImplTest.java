@@ -17,24 +17,23 @@ public class PassengerElevatorImplTest {
 
     @Test
     public void elevatorDirectionIsNoneWhenInitialized() {
-        assertEquals(ElevatorDirection.NONE, elevator.getDirection());
+        assertEquals("direction in wrong state", ElevatorDirection.NONE, elevator.getDirection());
     }
-
 
     @Test
     public void elevatorHasNoPassengersWhenInitialized() {
-        assertEquals(0, elevator.getPassangers().size());
+        assertEquals("passangers are not empty at initialization",true, elevator.getPassengers().isEmpty());
     }
 
 
     @Test
     public void elevatorIsOnMinimumFloorWhenInitialized() {
-        assertEquals(minFloor, elevator.currentFloor());
+        assertEquals("minFloor is not initialized correctly", minFloor, elevator.currentFloor());
     }
 
     @Test
     public void elevatorIsNotBusyWhenInitialized() {
-        assertEquals(false, elevator.isBusy());
+        assertEquals("should not be busy",false, elevator.isBusy());
     }
 
     @Test
