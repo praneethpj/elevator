@@ -91,6 +91,12 @@ public class PassengerElevatorImpl implements Elevator {
         return type;
     }
 
+    @Override
+    public void reset() {
+        setDirection(ElevatorDirection.NONE);
+        this.currentFloor = minFloor;
+        queue.clear();
+    }
 
     public void operate() {
         if (direction.equals(ElevatorDirection.UP)) {

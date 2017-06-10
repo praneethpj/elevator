@@ -14,6 +14,7 @@ public class PassengerElevatorImplTest {
     private int minFloor = -1;
     private int maxFloor = 10;
 
+    //given
     private PassengerElevatorImpl elevator = new PassengerElevatorImpl(1, minFloor, maxFloor);
 
     @Test
@@ -23,7 +24,7 @@ public class PassengerElevatorImplTest {
 
     @Test
     public void hasNoPassengersWhenInitialized() {
-        assertEquals("passangers are not empty at initialization",true, elevator.getPassengers().isEmpty());
+        assertEquals("passangers are not empty at initialization", true, elevator.getPassengers().isEmpty());
     }
 
     @Test
@@ -38,13 +39,14 @@ public class PassengerElevatorImplTest {
 
     @Test
     public void elevatorIsNotBusyWhenInitialized() {
-        assertEquals("should not be busy",false, elevator.isBusy());
+        assertEquals("should not be busy", false, elevator.isBusy());
     }
 
     @Test
     public void moveElevatorToAFloorAboveCurrentPosition() {
         //when
         elevator.moveElevator(10);
+        //then
         assertEquals("Not moving up", ElevatorDirection.UP, elevator.getDirection());
         assertEquals("Wrong addressed floor", 10, elevator.getAddressedFloor());
         assertEquals("Not Busy", true, elevator.isBusy());
@@ -108,4 +110,17 @@ public class PassengerElevatorImplTest {
     }
 
 
+    @Test
+    public void shouldResetTheElevator() {
+        //when
+        elevator.moveElevator(0);
+        elevator.moveElevator(1);
+        elevator.operate();
+        elevator.reset();
+        //then
+        assertEquals("Moving", ElevatorDirection.NONE, elevator.getDirection());
+        assertEquals("Empty queue", -999, elevator.getAddressedFloor());
+        assertEquals("On wrong floor", minFloor, elevator.currentFloor());
+        assertEquals("Busy", false, elevator.isBusy());
+    }
 }
