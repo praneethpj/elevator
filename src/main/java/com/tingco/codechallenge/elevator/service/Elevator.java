@@ -1,6 +1,7 @@
 package com.tingco.codechallenge.elevator.service;
 
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
+import com.tingco.codechallenge.elevator.enums.ElevatorType;
 
 /**
  * Interface for an elevator object.
@@ -52,5 +53,12 @@ public interface Elevator {
      * @return int actual floor at the moment.
      */
     int currentFloor();
+
+    /**
+     * Report the type of the elevator
+     *
+     * @return Enum with type
+     */
+    ElevatorType getElevatorType();
 
 }

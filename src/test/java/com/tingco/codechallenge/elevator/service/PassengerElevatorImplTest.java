@@ -1,6 +1,7 @@
 package com.tingco.codechallenge.elevator.service;
 
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
+import com.tingco.codechallenge.elevator.enums.ElevatorType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -16,15 +17,19 @@ public class PassengerElevatorImplTest {
     private PassengerElevatorImpl elevator = new PassengerElevatorImpl(1, minFloor, maxFloor);
 
     @Test
-    public void elevatorDirectionIsNoneWhenInitialized() {
+    public void directionIsNoneWhenInitialized() {
         assertEquals("direction in wrong state", ElevatorDirection.NONE, elevator.getDirection());
     }
 
     @Test
-    public void elevatorHasNoPassengersWhenInitialized() {
+    public void hasNoPassengersWhenInitialized() {
         assertEquals("passangers are not empty at initialization",true, elevator.getPassengers().isEmpty());
     }
 
+    @Test
+    public void isPassengerType() {
+        assertEquals("not correct type", ElevatorType.PASSENGER, elevator.getElevatorType());
+    }
 
     @Test
     public void elevatorIsOnMinimumFloorWhenInitialized() {

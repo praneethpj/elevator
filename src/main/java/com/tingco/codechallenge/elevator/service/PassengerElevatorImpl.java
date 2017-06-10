@@ -1,6 +1,7 @@
 package com.tingco.codechallenge.elevator.service;
 
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
+import com.tingco.codechallenge.elevator.enums.ElevatorType;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class PassengerElevatorImpl implements Elevator {
     private int currentFloor;
     private int minFloor;
     private int maxFloor;
+    private ElevatorType type;
 
     public PassengerElevatorImpl(int id, @Value("${com.tingco.elevator.minFloor}")int minFloor, @Value("${com.tingco.elevator.maxFloor}") int maxFloor) {
         this.id = id;
@@ -29,6 +31,7 @@ public class PassengerElevatorImpl implements Elevator {
         this.direction = ElevatorDirection.NONE;
         //TODO could set up a different property based on elevator type and initialize the elevator on that floor
         this.currentFloor = minFloor;
+        this.type = ElevatorType.PASSENGER;
 
     }
 
@@ -82,6 +85,12 @@ public class PassengerElevatorImpl implements Elevator {
     public int currentFloor() {
         return currentFloor;
     }
+
+    @Override
+    public ElevatorType getElevatorType() {
+        return type;
+    }
+
 
     public void operate() {
         if (direction.equals(ElevatorDirection.UP)) {
