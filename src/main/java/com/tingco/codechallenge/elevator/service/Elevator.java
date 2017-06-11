@@ -65,4 +65,9 @@ public interface Elevator {
      * Make elevator free for new operations.
      */
     void reset();
+
+    /**
+     * Move elevator based on current queue
+     */
+    void operate();
 }

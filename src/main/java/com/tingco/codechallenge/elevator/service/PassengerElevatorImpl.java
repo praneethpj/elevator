@@ -13,7 +13,6 @@ import java.util.TreeSet;
  */
 public class PassengerElevatorImpl implements Elevator {
 
-    private List<Passenger> passengers;
     private ElevatorDirection direction;
     private TreeSet<Integer> queue;
     private int id;
@@ -26,7 +25,6 @@ public class PassengerElevatorImpl implements Elevator {
         this.id = id;
         this.minFloor = minFloor;
         this.maxFloor = maxFloor;
-        this.passengers = new ArrayList<>();
         this.queue = new TreeSet<>();
         this.direction = ElevatorDirection.NONE;
         //TODO could set up a different property based on elevator type and initialize the elevator on that floor
@@ -60,7 +58,6 @@ public class PassengerElevatorImpl implements Elevator {
 
         if (direction.equals(ElevatorDirection.NONE)) {
             if (currentFloor == toFloor) {
-                //TODO add passenger}
                 return;
             }
             if (currentFloor < toFloor) {
@@ -98,6 +95,7 @@ public class PassengerElevatorImpl implements Elevator {
         queue.clear();
     }
 
+    @Override
     public void operate() {
         if (direction.equals(ElevatorDirection.UP)) {
             currentFloor++;
@@ -111,14 +109,6 @@ public class PassengerElevatorImpl implements Elevator {
                 setDirection(ElevatorDirection.NONE);
             }
         }
-    }
-
-    public List<Passenger> getPassengers() {
-        return passengers;
-    }
-
-    public void loadPassanger(Passenger passanger) {
-        this.passengers.add(passanger);
     }
 
     public void setDirection(ElevatorDirection direction) {

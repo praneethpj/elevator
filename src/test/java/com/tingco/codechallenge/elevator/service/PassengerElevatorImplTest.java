@@ -23,11 +23,6 @@ public class PassengerElevatorImplTest {
     }
 
     @Test
-    public void hasNoPassengersWhenInitialized() {
-        assertEquals("passangers are not empty at initialization", true, elevator.getPassengers().isEmpty());
-    }
-
-    @Test
     public void isPassengerType() {
         assertEquals("not correct type", ElevatorType.PASSENGER, elevator.getElevatorType());
     }

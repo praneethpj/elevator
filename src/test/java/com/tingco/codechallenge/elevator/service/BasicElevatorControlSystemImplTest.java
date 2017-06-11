@@ -38,7 +38,8 @@ public class BasicElevatorControlSystemImplTest {
         //when
         Elevator elevator = controlSystem.requestElevator(10);
         //then
-        assertEquals("not the elevator we want", null, elevator);
+        assertEquals("Elevator should not be available", null, elevator);
+        assertFalse("No pending requests", controlSystem.getPendingRequests().isEmpty());
     }
 
 }

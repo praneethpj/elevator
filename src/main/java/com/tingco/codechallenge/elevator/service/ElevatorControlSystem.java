@@ -1,6 +1,7 @@
 package com.tingco.codechallenge.elevator.service;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -36,4 +37,10 @@ interface ElevatorControlSystem {
      */
     void releaseElevator(Elevator elevator);
 
+
+    /**
+     * Report requests waiting to be served
+     *
+     */
+    Set<Integer> getPendingRequests();
 }
