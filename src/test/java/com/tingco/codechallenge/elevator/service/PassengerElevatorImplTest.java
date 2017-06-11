@@ -152,7 +152,7 @@ public class PassengerElevatorImplTest {
         //then
         assertEquals("Moving", ElevatorDirection.NONE, elevator.getDirection());
         assertEquals("Empty queue", -999, elevator.getAddressedFloor());
-        assertEquals("On wrong floor", minFloor, elevator.currentFloor());
+        assertEquals("On wrong floor", 0, elevator.currentFloor());
         assertEquals("Busy", false, elevator.isBusy());
     }
 }

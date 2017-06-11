@@ -1,5 +1,6 @@
 package com.tingco.codechallenge.elevator.service;
 
+import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -40,6 +41,21 @@ public class BasicElevatorControlSystemImplTest {
         //then
         assertEquals("Elevator should not be available", null, elevator);
         assertFalse("No pending requests", controlSystem.getPendingRequests().isEmpty());
+    }
+
+    @Test
+    public void releaseElevatorResetsTheElevatorsState(){
+        //given
+        PassengerElevatorImpl passengerElevator = new PassengerElevatorImpl(1, 0, 10);
+        List<Elevator> elevators = Collections.singletonList(passengerElevator);
+        controlSystem = new BasicElevatorControlSystemImpl(elevators);
+        //when
+        controlSystem.requestElevator(10);
+        passengerElevator.operate();
+        controlSystem.releaseElevator(passengerElevator);
+        //then
+        assertEquals("Should not be moving", ElevatorDirection.NONE, passengerElevator.getDirection());
+        assertEquals("On wrong floor", 0, passengerElevator.currentFloor());
     }
 
 }

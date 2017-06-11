@@ -89,7 +89,6 @@ public class PassengerElevatorImpl implements Elevator {
     @Override
     public void reset() {
         setDirection(ElevatorDirection.NONE);
-        this.currentFloor = minFloor;
         queue.clear();
     }
 
