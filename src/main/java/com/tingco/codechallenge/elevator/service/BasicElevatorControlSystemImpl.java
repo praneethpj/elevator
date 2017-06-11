@@ -1,5 +1,7 @@
 package com.tingco.codechallenge.elevator.service;
 
+import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
+
 import java.util.*;
 
 /**
@@ -19,7 +21,7 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
             Thread.sleep(1000);
             pendingRequests.forEach(request -> {
                 Elevator elevator = requestElevator(request);
-                if(elevator != null) {
+                if (elevator != null) {
                     pendingRequests.remove(request);
                 }
             });
@@ -29,13 +31,28 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
 
     @Override
     public Elevator requestElevator(int toFloor) {
-        Optional<Elevator> elevator = elevators.stream().filter(lift -> !lift.isBusy()).findFirst();
-        if(!elevator.isPresent()){
-            pendingRequests.add(toFloor);
-            return null;
-        } else {
-            return elevator.get();
+
+        Elevator requested = null;
+        Optional<Elevator> firstGoingDown = elevators.stream()
+                .filter(el -> el.getDirection().equals(ElevatorDirection.DOWN))
+                .filter(el -> el.currentFloor() > toFloor)
+                .sorted(Comparator.comparingInt(e -> e.currentFloor()))
+                .findFirst();
+        Optional<Elevator> parkingElevator = elevators.stream().filter(lift -> !lift.isBusy()).findFirst();
+
+        if (parkingElevator.isPresent()) {
+            // if there is an elevator going to the ground floor and its current position is above the request
+            // pick it up
+            // if there is no elevator going down or its bellow the pickup floor, let and idle one do the pickup
+            requested = firstGoingDown.orElseGet(parkingElevator::get);
         }
+
+        if (requested != null) {
+            requested.moveElevator(toFloor);
+        } else {
+            pendingRequests.add(toFloor);
+        }
+        return requested;
     }
 
     @Override
@@ -46,7 +63,7 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
 
     @Override
     public void releaseElevator(Elevator elevator) {
-        if(elevators.contains(elevator)){
+        if (elevators.contains(elevator)) {
             elevator.reset();
         }
     }

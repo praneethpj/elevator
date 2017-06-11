@@ -19,8 +19,8 @@ public class BasicElevatorControlSystemImplTest {
     @Test
     public void assignRequestToElevator(){
         //given
-        PassengerElevatorImpl passengerElevator = new PassengerElevatorImpl(1, 0, 10);
-        PassengerElevatorImpl passengerElevator2 = new PassengerElevatorImpl(1, 0, 10);
+        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(1, 0, 10);
+        BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 0, 10);
         passengerElevator2.moveElevator(9);
         List<Elevator> elevators = new ArrayList<>();
         elevators.add(passengerElevator);
@@ -46,7 +46,7 @@ public class BasicElevatorControlSystemImplTest {
     @Test
     public void releaseElevatorResetsTheElevatorsState(){
         //given
-        PassengerElevatorImpl passengerElevator = new PassengerElevatorImpl(1, 0, 10);
+        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(1, 0, 10);
         List<Elevator> elevators = Collections.singletonList(passengerElevator);
         controlSystem = new BasicElevatorControlSystemImpl(elevators);
         //when
@@ -55,7 +55,31 @@ public class BasicElevatorControlSystemImplTest {
         controlSystem.releaseElevator(passengerElevator);
         //then
         assertEquals("Should not be moving", ElevatorDirection.NONE, passengerElevator.getDirection());
-        assertEquals("On wrong floor", 0, passengerElevator.currentFloor());
+        assertEquals("On wrong floor", 1, passengerElevator.currentFloor());
+    }
+    @Test
+    public void assignRequestToTheElevatorGoingDownIfItsCloser(){
+        //given
+        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(1, 0, 10);
+        BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 0, 10);
+        List<Elevator> elevators = new ArrayList<>();
+        elevators.add(passengerElevator);
+        elevators.add(passengerElevator2);
+        controlSystem = new BasicElevatorControlSystemImpl(elevators);
+        //when
+        controlSystem.requestElevator(6);
+        passengerElevator.operate(); //1
+        passengerElevator.operate(); //2
+        passengerElevator.operate(); //3
+        passengerElevator.operate(); //4
+        passengerElevator.operate(); //5
+        passengerElevator.operate(); //6
+        passengerElevator.operate(); //starts going back to ground floor (5)
+        controlSystem.requestElevator(4); // request is closer to an elevator than to the ground floor
+        //then
+        assertEquals("Should not be moving", ElevatorDirection.DOWN, passengerElevator.getDirection());
+        assertEquals("To wrong floor", 4, passengerElevator.getAddressedFloor());
+        assertEquals("On wrong floor", 5, passengerElevator.currentFloor());
     }
 
 }
