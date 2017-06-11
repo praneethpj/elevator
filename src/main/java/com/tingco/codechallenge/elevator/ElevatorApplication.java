@@ -1,4 +1,4 @@
-package com.tingco.codechallenge;
+package com.tingco.codechallenge.elevator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
