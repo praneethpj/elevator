@@ -43,7 +43,7 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
         if (parkingElevator.isPresent()) {
             // if there is an elevator going to the ground floor and its current position is above the request
             // pick it up
-            // if there is no elevator going down or its bellow the pickup floor, let and idle one do the pickup
+            // if there is no elevator going down or its bellow the pickup floor, let an idle one do the pickup
             requested = firstGoingDown.orElseGet(parkingElevator::get);
         }
 
