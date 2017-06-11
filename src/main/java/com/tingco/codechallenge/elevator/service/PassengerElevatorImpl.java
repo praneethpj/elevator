@@ -4,8 +4,6 @@ import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 import com.tingco.codechallenge.elevator.enums.ElevatorType;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
 
 /**
@@ -21,7 +19,7 @@ public class PassengerElevatorImpl implements Elevator {
     private int maxFloor;
     private ElevatorType type;
 
-    public PassengerElevatorImpl(int id, @Value("${com.tingco.elevator.minFloor}")int minFloor, @Value("${com.tingco.elevator.maxFloor}") int maxFloor) {
+    public PassengerElevatorImpl(int id, @Value("${com.tingco.elevator.minFloor}") int minFloor, @Value("${com.tingco.elevator.maxFloor}") int maxFloor) {
         this.id = id;
         this.minFloor = minFloor;
         this.maxFloor = maxFloor;
@@ -61,7 +59,7 @@ public class PassengerElevatorImpl implements Elevator {
                 return;
             }
             if (currentFloor < toFloor) {
-               setDirection(ElevatorDirection.UP);
+                setDirection(ElevatorDirection.UP);
             } else {
                 setDirection(ElevatorDirection.DOWN);
             }
@@ -103,9 +101,9 @@ public class PassengerElevatorImpl implements Elevator {
             currentFloor--;
         }
 
-        if (currentFloor==getAddressedFloor()){
+        if (currentFloor == getAddressedFloor()) {
             queue.pollFirst();
-            if(queue.isEmpty()){
+            if (queue.isEmpty()) {
                 setDirection(ElevatorDirection.NONE);
             }
         }
@@ -115,7 +113,4 @@ public class PassengerElevatorImpl implements Elevator {
         this.direction = direction;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 }
