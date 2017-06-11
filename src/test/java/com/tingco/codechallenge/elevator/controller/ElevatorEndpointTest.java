@@ -17,15 +17,15 @@ import com.tingco.codechallenge.elevator.ElevatorApplication;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = ElevatorApplication.class)
-public class ElevatorControllerEndPointsTest {
+public class ElevatorEndpointTest {
 
     @Autowired
-    private ElevatorController endPoints;
+    private ElevatorEndpoint endpoint;
 
     @Test
     public void ping() {
 
-        Assert.assertEquals("pong", endPoints.ping());
+        Assert.assertEquals("pong", endpoint.ping());
 
     }
 

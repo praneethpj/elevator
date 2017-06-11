@@ -10,7 +10,7 @@ import java.util.Set;
  * @author Sven Wesley
  *
  */
-interface ElevatorControlSystem {
+public interface ElevatorControlSystem {
 
     /**
      * Request an elevator to the specified floor.

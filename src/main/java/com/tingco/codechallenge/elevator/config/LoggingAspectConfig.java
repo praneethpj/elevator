@@ -29,10 +29,9 @@ class LoggingAspectConfig {
         this.eventBus = eventBus;
     }
 
-    @Pointcut("within(com.tingco.codechallenge.elevator.service..*) || within(com.tingco.codechallenge.elevator.controller..*)")
+    @Pointcut("within(com.tingco.codechallenge.elevator.service..*)")
     public void allServicePackage() {
     }
-
 
     @Before("allServicePackage()")
     public void beforeInfoLogger(JoinPoint jp) {

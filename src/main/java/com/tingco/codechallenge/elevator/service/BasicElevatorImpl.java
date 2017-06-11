@@ -1,7 +1,6 @@
 package com.tingco.codechallenge.elevator.service;
 
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.TreeSet;
 
@@ -17,7 +16,8 @@ public class BasicElevatorImpl implements Elevator {
     private int minFloor;
     private int maxFloor;
 
-    public BasicElevatorImpl(int id, @Value("${com.tingco.elevator.minFloor}") int minFloor, @Value("${com.tingco.elevator.maxFloor}") int maxFloor) {
+
+    public BasicElevatorImpl(int id, int minFloor, int maxFloor) {
         this.id = id;
         this.minFloor = minFloor;
         this.maxFloor = maxFloor;
@@ -35,7 +35,7 @@ public class BasicElevatorImpl implements Elevator {
     @Override
     public int getAddressedFloor() {
         //TODO maybe refactor this to Integer, I dont like returning -999 here
-        return direction.equals(ElevatorDirection.NONE) ? -999 : direction.equals(ElevatorDirection.UP)?queue.first():queue.last();
+        return direction.equals(ElevatorDirection.NONE) ? -999 : direction.equals(ElevatorDirection.UP) ? queue.first() : queue.last();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class BasicElevatorImpl implements Elevator {
 
         // if the elevator has no more floors to address, stop it
         if (currentFloor == getAddressedFloor()) {
-            if(direction.equals(ElevatorDirection.UP)) {
+            if (direction.equals(ElevatorDirection.UP)) {
                 queue.pollFirst();
             } else {
                 queue.pollLast();
@@ -115,4 +115,15 @@ public class BasicElevatorImpl implements Elevator {
         this.direction = direction;
     }
 
+    @Override
+    public String toString() {
+        return "BasicElevatorImpl{" +
+                "direction=" + direction +
+                ", queue=" + queue +
+                ", id=" + id +
+                ", currentFloor=" + currentFloor +
+                ", minFloor=" + minFloor +
+                ", maxFloor=" + maxFloor +
+                '}';
+    }
 }

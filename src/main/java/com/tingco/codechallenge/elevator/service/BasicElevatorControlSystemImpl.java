@@ -1,32 +1,42 @@
 package com.tingco.codechallenge.elevator.service;
 
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
  * @author Lorinc Sonnevend
  */
+@Service
 public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
 
     private List<Elevator> elevators = new ArrayList<>();
     private Set<Integer> pendingRequests = new TreeSet<>();
 
-    public BasicElevatorControlSystemImpl(List<Elevator> elevators) {
-        this.elevators = elevators;
+    @Value("${com.tingco.elevator.numberofelevators}")
+    private int numberOfElevators;
+
+    @Value("${com.tingco.elevator.minFloor}")
+    private int minFloor;
+
+    @Value("${com.tingco.elevator.maxFloor}")
+    private int maxFloor;
+
+    public BasicElevatorControlSystemImpl() {
     }
 
-    public void start() throws InterruptedException {
-        do {
-            Thread.sleep(1000);
-            pendingRequests.forEach(request -> {
-                Elevator elevator = requestElevator(request);
-                if (elevator != null) {
-                    pendingRequests.remove(request);
-                }
-            });
-            elevators.forEach(Elevator::operate);
-        } while (true);
+    @PostConstruct
+    public void setUpElevators(){
+        for (int i = 0; i < numberOfElevators; i++) {
+            elevators.add(new BasicElevatorImpl(i, minFloor, maxFloor));
+        }
+    }
+
+    public BasicElevatorControlSystemImpl(List<Elevator> elevators) {
+        this.elevators = elevators;
     }
 
     @Override
