@@ -61,4 +61,8 @@ public interface Elevator {
      */
     ElevatorType getElevatorType();
 
+    /**
+     * Make elevator free for new operations.
+     */
+    void reset();
 }

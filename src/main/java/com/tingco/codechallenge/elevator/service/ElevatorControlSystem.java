@@ -9,7 +9,7 @@ import java.util.List;
  * @author Sven Wesley
  *
  */
-interface ElevatorService {
+interface ElevatorControlSystem {
 
     /**
      * Request an elevator to the specified floor.
