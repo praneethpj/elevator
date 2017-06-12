@@ -1,6 +1,7 @@
 package com.tingco.codechallenge.elevator.service;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 
@@ -42,5 +43,5 @@ public interface ElevatorControlSystem {
      * Report requests waiting to be served
      *
      */
-    Set<Integer> getPendingRequests();
+    Queue<Integer> getPendingRequests();
 }

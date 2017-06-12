@@ -59,7 +59,7 @@ public class BasicElevatorControlSystemImplTest {
     }
 
     @Test
-    public void assignRequestToTheElevatorGoingDownIfItsCloser(){
+    public void assignRequestToIdleElevator(){
         //given
         BasicElevatorImpl passengerElevator = new BasicElevatorImpl(1, 0, 10);
         BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 0, 10);
@@ -75,12 +75,12 @@ public class BasicElevatorControlSystemImplTest {
         passengerElevator.operate(); //4
         passengerElevator.operate(); //5
         passengerElevator.operate(); //6
-        passengerElevator.operate(); //starts going back to ground floor (5)
+        passengerElevator.operate(); //waits
         controlSystem.requestElevator(4); // request is closer to an elevator than to the ground floor
         //then
         assertEquals("Should be moving", ElevatorDirection.DOWN, passengerElevator.getDirection());
         assertEquals("To wrong floor", 4, passengerElevator.getAddressedFloor());
-        assertEquals("On wrong floor", 5, passengerElevator.currentFloor());
+        assertEquals("On wrong floor", 6, passengerElevator.currentFloor());
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -137,17 +138,19 @@ public class BasicElevatorImplTest {
     }
 
     @Test
-    public void movesDownIfHasNoMoreRequests() {
+    public void stopIfHasNoMoreRequests() {
         //when
         elevator.moveElevator(minFloor + 2);
         elevator.operate(); //min+1
         elevator.operate(); //min+2
-        elevator.operate(); //min+1
+        elevator.operate();
+        elevator.operate();
+        elevator.operate();
         //then
-        assertEquals("Not moving", ElevatorDirection.DOWN, elevator.getDirection());
-        assertEquals("Empty queue", minFloor, elevator.getAddressedFloor());
-        assertEquals("On wrong floor", minFloor + 1, elevator.currentFloor());
-        assertTrue("Not busy", elevator.isBusy());
+        assertEquals("Moving", ElevatorDirection.NONE, elevator.getDirection());
+        assertEquals("Empty queue", -999, elevator.getAddressedFloor());
+        assertEquals("On wrong floor", minFloor + 2, elevator.currentFloor());
+        assertFalse("Busy", elevator.isBusy());
     }
 
 

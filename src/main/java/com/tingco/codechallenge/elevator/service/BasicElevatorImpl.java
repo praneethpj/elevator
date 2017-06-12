@@ -1,30 +1,37 @@
 package com.tingco.codechallenge.elevator.service;
 
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.TreeSet;
 
 /**
  * @author Lorinc Sonnevend
  */
-public class BasicElevatorImpl implements Elevator {
+public class BasicElevatorImpl implements Elevator, Runnable {
 
     private ElevatorDirection direction;
-    private TreeSet<Integer> queue;
+    private TreeSet<Integer> targetFloors;
     private int id;
     private int currentFloor;
     private int minFloor;
     private int maxFloor;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public BasicElevatorImpl(int id, int minFloor, int maxFloor) {
         this.id = id;
         this.minFloor = minFloor;
         this.maxFloor = maxFloor;
-        this.queue = new TreeSet<>();
+        this.targetFloors = new TreeSet<>();
         this.direction = ElevatorDirection.NONE;
         this.currentFloor = minFloor;
+    }
 
+    @Override
+    public void run() {
+        operate();
     }
 
     @Override
@@ -35,7 +42,7 @@ public class BasicElevatorImpl implements Elevator {
     @Override
     public int getAddressedFloor() {
         //TODO maybe refactor this to Integer, I dont like returning -999 here
-        return direction.equals(ElevatorDirection.NONE) ? -999 : direction.equals(ElevatorDirection.UP) ? queue.first() : queue.last();
+        return direction.equals(ElevatorDirection.NONE) ? -999 : direction.equals(ElevatorDirection.UP) ? targetFloors.first() : targetFloors.last();
     }
 
     @Override
@@ -60,7 +67,7 @@ public class BasicElevatorImpl implements Elevator {
                 setDirection(ElevatorDirection.DOWN);
             }
         }
-        queue.add(toFloor);
+        targetFloors.add(toFloor);
     }
 
     private boolean outOfLimits(int toFloor) {
@@ -80,35 +87,34 @@ public class BasicElevatorImpl implements Elevator {
     @Override
     public void reset() {
         setDirection(ElevatorDirection.NONE);
-        queue.clear();
+        targetFloors.clear();
     }
 
     @Override
     public void operate() {
-        // if the elevator stopped on a floor other than the ground floor
-        // start moving it down to ground floor
-        if (direction.equals(ElevatorDirection.NONE) && currentFloor != minFloor) {
-            setDirection(ElevatorDirection.DOWN);
-            queue.add(minFloor);
-        }
 
         if (direction.equals(ElevatorDirection.UP)) {
             currentFloor++;
+            logger.info(this.toString());
         } else if (direction.equals(ElevatorDirection.DOWN)) {
             currentFloor--;
+            logger.info(this.toString());
         }
 
         // if the elevator has no more floors to address, stop it
         if (currentFloor == getAddressedFloor()) {
             if (direction.equals(ElevatorDirection.UP)) {
-                queue.pollFirst();
+                targetFloors.pollFirst();
             } else {
-                queue.pollLast();
+                targetFloors.pollLast();
             }
-            if (queue.isEmpty()) {
+            if (targetFloors.isEmpty()) {
                 setDirection(ElevatorDirection.NONE);
+                logger.info(this.toString());
             }
         }
+
+
     }
 
     public void setDirection(ElevatorDirection direction) {
@@ -119,11 +125,12 @@ public class BasicElevatorImpl implements Elevator {
     public String toString() {
         return "BasicElevatorImpl{" +
                 "direction=" + direction +
-                ", queue=" + queue +
+                ", targetFloors=" + targetFloors +
                 ", id=" + id +
                 ", currentFloor=" + currentFloor +
                 ", minFloor=" + minFloor +
                 ", maxFloor=" + maxFloor +
                 '}';
     }
+
 }

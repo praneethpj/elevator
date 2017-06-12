@@ -1,11 +1,16 @@
 package com.tingco.codechallenge.elevator.service;
 
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * @author Lorinc Sonnevend
@@ -14,7 +19,12 @@ import java.util.*;
 public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
 
     private List<Elevator> elevators = new ArrayList<>();
-    private Set<Integer> pendingRequests = new TreeSet<>();
+    private Queue<Integer> pendingRequests = new LinkedList<>();
+
+    @Autowired
+    private ScheduledExecutorService taskExecutor;
+
+    private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     @Value("${com.tingco.elevator.numberofelevators}")
     private int numberOfElevators;
@@ -25,14 +35,36 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
     @Value("${com.tingco.elevator.maxFloor}")
     private int maxFloor;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public BasicElevatorControlSystemImpl() {
+    }
+
+    @PreDestroy
+    public void tearDown(){
+        if (executorService != null) {
+            executorService.shutdown();
+        }
     }
 
     @PostConstruct
     public void setUpElevators(){
         for (int i = 0; i < numberOfElevators; i++) {
-            elevators.add(new BasicElevatorImpl(i, minFloor, maxFloor));
+            BasicElevatorImpl basicElevator = new BasicElevatorImpl(i, minFloor, maxFloor);
+            elevators.add(basicElevator);
+            taskExecutor.scheduleAtFixedRate(basicElevator, 1, 1, TimeUnit.SECONDS);
         }
+
+        executorService.scheduleAtFixedRate(() -> {
+            if (!pendingRequests.isEmpty()) {
+                Elevator requestElevator = requestElevator(pendingRequests.peek());
+                if (requestElevator != null) {
+                    pendingRequests.poll();
+                    logger.info("removed from queue - "+ pendingRequests);
+                }
+            }
+        }, 1, 2, TimeUnit.SECONDS);
+
     }
 
     public BasicElevatorControlSystemImpl(List<Elevator> elevators) {
@@ -60,6 +92,7 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
         if (requested != null) {
             requested.moveElevator(toFloor);
         } else {
+            logger.info(">>>added to queue"+toFloor);
             pendingRequests.add(toFloor);
         }
         return requested;
@@ -67,7 +100,6 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
 
     @Override
     public List<Elevator> getElevators() {
-        //TODO this list should be turned immutable
         return elevators;
     }
 
@@ -79,7 +111,7 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
     }
 
     @Override
-    public Set<Integer> getPendingRequests() {
+    public Queue<Integer> getPendingRequests() {
         return pendingRequests;
     }
 }
