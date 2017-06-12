@@ -1,6 +1,5 @@
 package com.tingco.codechallenge.elevator.service;
 
-import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lorinc Sonnevend
@@ -69,7 +70,7 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
     }
 
     @Override
-    public Elevator requestElevator(int toFloor) {
+    public synchronized Elevator requestElevator(int toFloor) {
         Elevator requested = null;
         Optional<Elevator> closestPending = elevators.stream()
                 .filter(el -> !el.isBusy())
@@ -89,11 +90,11 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
 
     @Override
     public List<Elevator> getElevators() {
-        return elevators;
+        return new ArrayList<>(elevators);
     }
 
     @Override
-    public void releaseElevator(Elevator elevator) {
+    public synchronized void releaseElevator(Elevator elevator) {
         if (elevators.contains(elevator)) {
             elevator.reset();
         }
