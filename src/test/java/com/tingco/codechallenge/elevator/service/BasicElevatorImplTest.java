@@ -49,7 +49,7 @@ public class BasicElevatorImplTest {
         elevator.moveElevator(minFloor);
         //then
         assertEquals("Is moving", ElevatorDirection.NONE, elevator.getDirection());
-        assertEquals("Wrong addressed floor", -999, elevator.getAddressedFloor());
+        assertEquals("Wrong addressed floor", minFloor, elevator.getAddressedFloor());
         assertEquals("Busy", false, elevator.isBusy());
     }
 
@@ -59,7 +59,7 @@ public class BasicElevatorImplTest {
         elevator.moveElevator(maxFloor + 1);
         //then
         assertEquals("Is moving", ElevatorDirection.NONE, elevator.getDirection());
-        assertEquals("Wrong addressed floor", -999, elevator.getAddressedFloor());
+        assertEquals("Wrong addressed floor", minFloor, elevator.getAddressedFloor());
         assertEquals("Busy", false, elevator.isBusy());
     }
 
@@ -69,7 +69,8 @@ public class BasicElevatorImplTest {
         elevator.moveElevator(minFloor - 1);
         //then
         assertEquals("Is moving", ElevatorDirection.NONE, elevator.getDirection());
-        assertEquals("Wrong addressed floor", -999, elevator.getAddressedFloor());
+        assertEquals("Wrong addressed floor", minFloor, elevator.getAddressedFloor());
+        assertEquals("Wrong floor", minFloor, elevator.currentFloor());
         assertEquals("Busy", false, elevator.isBusy());
     }
 
@@ -92,7 +93,7 @@ public class BasicElevatorImplTest {
         elevator.operate();
         //then
         assertEquals("Is moving", ElevatorDirection.NONE, elevator.getDirection());
-        assertEquals("Wrong addressed floor", -999, elevator.getAddressedFloor());
+        assertEquals("Wrong addressed floor", minFloor + 1, elevator.getAddressedFloor());
         assertEquals("On wrong floor", minFloor + 1, elevator.currentFloor());
         assertEquals("Is busy", false, elevator.isBusy());
     }
@@ -132,7 +133,7 @@ public class BasicElevatorImplTest {
         elevator.operate();
         //then
         assertEquals("Moving", ElevatorDirection.NONE, elevator.getDirection());
-        assertEquals("Has queue", -999, elevator.getAddressedFloor());
+        assertEquals("Not on current floor", minFloor, elevator.getAddressedFloor());
         assertEquals("On wrong floor", minFloor, elevator.currentFloor());
         assertEquals("Busy", false, elevator.isBusy());
     }
@@ -148,7 +149,7 @@ public class BasicElevatorImplTest {
         elevator.operate();
         //then
         assertEquals("Moving", ElevatorDirection.NONE, elevator.getDirection());
-        assertEquals("Empty queue", -999, elevator.getAddressedFloor());
+        assertEquals("Empty queue", minFloor + 2, elevator.getAddressedFloor());
         assertEquals("On wrong floor", minFloor + 2, elevator.currentFloor());
         assertFalse("Busy", elevator.isBusy());
     }
@@ -163,7 +164,7 @@ public class BasicElevatorImplTest {
         elevator.reset();
         //then
         assertEquals("Moving", ElevatorDirection.NONE, elevator.getDirection());
-        assertEquals("Empty queue", -999, elevator.getAddressedFloor());
+        assertEquals("Not current floor", 1, elevator.getAddressedFloor());
         assertEquals("On wrong floor", minFloor + 1, elevator.currentFloor());
         assertEquals("Busy", false, elevator.isBusy());
     }

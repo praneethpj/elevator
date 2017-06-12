@@ -41,14 +41,14 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
     }
 
     @PreDestroy
-    public void tearDown(){
+    public void tearDown() {
         if (executorService != null) {
             executorService.shutdown();
         }
     }
 
     @PostConstruct
-    public void setUpElevators(){
+    public void setUpElevators() {
         for (int i = 0; i < numberOfElevators; i++) {
             BasicElevatorImpl basicElevator = new BasicElevatorImpl(i, minFloor, maxFloor);
             elevators.add(basicElevator);
@@ -57,11 +57,8 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
 
         executorService.scheduleAtFixedRate(() -> {
             if (!pendingRequests.isEmpty()) {
-                Elevator requestElevator = requestElevator(pendingRequests.peek());
-                if (requestElevator != null) {
-                    pendingRequests.poll();
-                    logger.info("removed from queue - "+ pendingRequests);
-                }
+                Integer requestedFloor = pendingRequests.poll();
+                requestElevator(requestedFloor);
             }
         }, 1, 2, TimeUnit.SECONDS);
 
@@ -73,26 +70,18 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
 
     @Override
     public Elevator requestElevator(int toFloor) {
-
         Elevator requested = null;
-        Optional<Elevator> firstGoingDown = elevators.stream()
-                .filter(el -> el.getDirection().equals(ElevatorDirection.DOWN))
-                .filter(el -> el.currentFloor() > toFloor)
-                .sorted(Comparator.comparingInt(e -> e.currentFloor()))
+        Optional<Elevator> closestPending = elevators.stream()
+                .filter(el -> !el.isBusy())
+                .sorted(Comparator.comparingInt(e -> Math.abs(e.currentFloor() - toFloor)))
                 .findFirst();
-        Optional<Elevator> parkingElevator = elevators.stream().filter(lift -> !lift.isBusy()).findFirst();
 
-        if (parkingElevator.isPresent()) {
-            // if there is an elevator going to the ground floor and its current position is above the request
-            // pick it up
-            // if there is no elevator going down or its bellow the pickup floor, let an idle one do the pickup
-            requested = firstGoingDown.orElseGet(parkingElevator::get);
-        }
-
-        if (requested != null) {
+        if (closestPending.isPresent()) {
+            requested = closestPending.get();
             requested.moveElevator(toFloor);
+            logger.info(">>>assigned elevator with id: " + requested.getId());
         } else {
-            logger.info(">>>added to queue"+toFloor);
+            logger.info(">>>added to queue " + toFloor);
             pendingRequests.add(toFloor);
         }
         return requested;

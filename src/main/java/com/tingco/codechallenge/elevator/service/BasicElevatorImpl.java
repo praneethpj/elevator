@@ -4,19 +4,17 @@ import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.TreeSet;
-
 /**
  * @author Lorinc Sonnevend
  */
 public class BasicElevatorImpl implements Elevator, Runnable {
 
     private ElevatorDirection direction;
-    private TreeSet<Integer> targetFloors;
     private int id;
     private int currentFloor;
     private int minFloor;
     private int maxFloor;
+    private int addressedFloor;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -24,9 +22,9 @@ public class BasicElevatorImpl implements Elevator, Runnable {
         this.id = id;
         this.minFloor = minFloor;
         this.maxFloor = maxFloor;
-        this.targetFloors = new TreeSet<>();
         this.direction = ElevatorDirection.NONE;
         this.currentFloor = minFloor;
+        this.addressedFloor = minFloor;
     }
 
     @Override
@@ -41,8 +39,7 @@ public class BasicElevatorImpl implements Elevator, Runnable {
 
     @Override
     public int getAddressedFloor() {
-        //TODO maybe refactor this to Integer, I dont like returning -999 here
-        return direction.equals(ElevatorDirection.NONE) ? -999 : direction.equals(ElevatorDirection.UP) ? targetFloors.first() : targetFloors.last();
+        return addressedFloor;
     }
 
     @Override
@@ -57,17 +54,17 @@ public class BasicElevatorImpl implements Elevator, Runnable {
             return;
         }
 
-        if (direction.equals(ElevatorDirection.NONE)) {
-            if (currentFloor == toFloor) {
-                return;
-            }
-            if (currentFloor < toFloor) {
-                setDirection(ElevatorDirection.UP);
-            } else {
-                setDirection(ElevatorDirection.DOWN);
-            }
+        if(currentFloor==toFloor){
+            return;
         }
-        targetFloors.add(toFloor);
+
+        if (currentFloor < toFloor) {
+            setDirection(ElevatorDirection.UP);
+        } else {
+            setDirection(ElevatorDirection.DOWN);
+        }
+
+        addressedFloor = toFloor;
     }
 
     private boolean outOfLimits(int toFloor) {
@@ -87,7 +84,7 @@ public class BasicElevatorImpl implements Elevator, Runnable {
     @Override
     public void reset() {
         setDirection(ElevatorDirection.NONE);
-        targetFloors.clear();
+        addressedFloor = currentFloor;
     }
 
     @Override
@@ -102,19 +99,10 @@ public class BasicElevatorImpl implements Elevator, Runnable {
         }
 
         // if the elevator has no more floors to address, stop it
-        if (currentFloor == getAddressedFloor()) {
-            if (direction.equals(ElevatorDirection.UP)) {
-                targetFloors.pollFirst();
-            } else {
-                targetFloors.pollLast();
-            }
-            if (targetFloors.isEmpty()) {
-                setDirection(ElevatorDirection.NONE);
-                logger.info(this.toString());
-            }
+        if (!direction.equals(ElevatorDirection.NONE) && currentFloor == addressedFloor) {
+            setDirection(ElevatorDirection.NONE);
+            logger.info(this.toString());
         }
-
-
     }
 
     public void setDirection(ElevatorDirection direction) {
@@ -125,12 +113,11 @@ public class BasicElevatorImpl implements Elevator, Runnable {
     public String toString() {
         return "BasicElevatorImpl{" +
                 "direction=" + direction +
-                ", targetFloors=" + targetFloors +
                 ", id=" + id +
                 ", currentFloor=" + currentFloor +
                 ", minFloor=" + minFloor +
                 ", maxFloor=" + maxFloor +
+                ", addressedFloor=" + addressedFloor +
                 '}';
     }
-
 }
