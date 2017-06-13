@@ -30,7 +30,7 @@ class LoggingAspectConfig {
 
         if (logger.isInfoEnabled()) {
             Method method = getMethod(jp);
-            logger.info("Entering method '{}' with arguments '{}'", method.getName(), Arrays.asList(jp.getArgs()));
+            logger.debug("Entering method '{}' with arguments '{}'", method.getName(), Arrays.asList(jp.getArgs()));
         }
     }
 
@@ -40,7 +40,7 @@ class LoggingAspectConfig {
 
         if (logger.isInfoEnabled()) {
             Method method = getMethod(jp);
-            logger.info("Leaving method '{}' with return value '{}'", method.getName(), retVal);
+            logger.debug("Leaving method '{}' with return value '{}'", method.getName(), retVal);
         }
     }
 

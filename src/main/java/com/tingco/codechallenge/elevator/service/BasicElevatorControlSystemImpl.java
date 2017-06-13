@@ -45,9 +45,6 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
     @Value("${com.tingco.elevator.maxFloor}")
     private int maxFloor;
 
-    //TODO remove this
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public BasicElevatorControlSystemImpl() {
     }
 
@@ -78,26 +75,22 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
     @Override
     public synchronized Elevator requestElevator(int toFloor) {
         Elevator requested = null;
-        Optional<Elevator> closestPending = elevators.stream()
+        Optional<Elevator> closestIdle = elevators.stream()
                 .filter(el -> !el.isBusy())
                 .sorted(Comparator.comparingInt(e -> Math.abs(e.currentFloor() - toFloor)))
                 .findFirst();
 
-        if (closestPending.isPresent()) {
-            requested = closestPending.get();
+        if (closestIdle.isPresent()) {
+            requested = closestIdle.get();
             requested.moveElevator(toFloor);
             eventBus.post(new ElevatorEventBuilder()
                     .setEventType(ELEVATOR_ASSIGNED)
                     .setElevatorId(requested.getId())
                     .createElevatorEvent());
-            //TODO remove
-            logger.info(">>>assigned elevator with id: " + requested.getId());
         } else {
             eventBus.post(new ElevatorEventBuilder()
                     .setEventType(EventType.PENDING_REQUEST)
                     .createElevatorEvent());
-            //TODO remove
-            logger.info(">>>added to queue " + toFloor);
             pendingRequests.add(toFloor);
         }
         return requested;

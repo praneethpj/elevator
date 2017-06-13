@@ -1,6 +1,7 @@
 package com.tingco.codechallenge.elevator.controller;
 
 import com.tingco.codechallenge.elevator.service.Elevator;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -16,7 +17,7 @@ public interface ElevatorEndpoint {
      *
      * @return Requested elevator or null
      */
-    Elevator requestElevator(Integer toFloor);
+    ResponseEntity<Elevator> requestElevator(Integer toFloor);
 
     /**
      * Report list of  {@link Elevator}
@@ -30,7 +31,7 @@ public interface ElevatorEndpoint {
      *
      * @return whether release was successful
      */
-    Boolean getElevators(Integer elevatorId);
+    ResponseEntity<Boolean> releaseElevator(Integer elevatorId);
 
     /**
      * Ping service to test if we are alive.

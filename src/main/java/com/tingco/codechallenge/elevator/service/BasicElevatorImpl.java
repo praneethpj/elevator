@@ -22,8 +22,6 @@ public class BasicElevatorImpl implements Elevator, Runnable {
     private EventBus eventBus;
     private int addressedFloor;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public BasicElevatorImpl(int id, int minFloor, int maxFloor, EventBus eventBus) {
         this.id = id;
         this.minFloor = minFloor;
@@ -91,6 +89,10 @@ public class BasicElevatorImpl implements Elevator, Runnable {
     @Override
     public void reset() {
         setDirection(ElevatorDirection.NONE);
+        eventBus.post(new ElevatorEventBuilder()
+                .setEventType(BECAME_IDLE)
+                .setElevatorId(getId())
+                .createElevatorEvent());
         addressedFloor = currentFloor;
     }
 
@@ -103,16 +105,12 @@ public class BasicElevatorImpl implements Elevator, Runnable {
                     .setEventType(MOVING_UP)
                     .setElevatorId(getId())
                     .createElevatorEvent());
-            //TODO remove
-            logger.info(this.toString());
         } else if (direction.equals(ElevatorDirection.DOWN)) {
             currentFloor--;
             eventBus.post(new ElevatorEventBuilder()
                     .setEventType(MOVING_DOWN)
                     .setElevatorId(getId())
                     .createElevatorEvent());
-            //TODO remove
-            logger.info(this.toString());
         }
 
         // if the elevator has no more floors to address, stop it
@@ -122,8 +120,6 @@ public class BasicElevatorImpl implements Elevator, Runnable {
                     .setEventType(BECAME_IDLE)
                     .setElevatorId(getId())
                     .createElevatorEvent());
-            //TODO remove
-            logger.info(this.toString());
         }
     }
 

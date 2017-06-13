@@ -4,6 +4,7 @@ import com.tingco.codechallenge.elevator.service.Elevator;
 import com.tingco.codechallenge.elevator.service.ElevatorControlSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,12 @@ public final class ElevatorEndpointImpl implements ElevatorEndpoint {
     @Value("${com.tingco.elevator.numberofelevators}")
     private int numberOfElevators;
 
+    @Value("${com.tingco.elevator.minFloor}")
+    private int minFloor;
+
+    @Value("${com.tingco.elevator.maxFloor}")
+    private int maxFloor;
+
     private final ElevatorControlSystem elevatorControlSystem;
 
     @Autowired
@@ -32,8 +39,11 @@ public final class ElevatorEndpointImpl implements ElevatorEndpoint {
 
     @Override
     @RequestMapping(value = "/request/{toFloor}", method = RequestMethod.POST)
-    public Elevator requestElevator(@PathVariable Integer toFloor) {
-        return elevatorControlSystem.requestElevator(toFloor);
+    public ResponseEntity<Elevator> requestElevator(@PathVariable Integer toFloor) {
+        if (toFloor < minFloor || toFloor > maxFloor) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(elevatorControlSystem.requestElevator(toFloor));
     }
 
     @Override
@@ -44,12 +54,12 @@ public final class ElevatorEndpointImpl implements ElevatorEndpoint {
 
     @Override
     @RequestMapping(value = "/release/{elevatorId}", method = RequestMethod.POST)
-    public Boolean getElevators(@PathVariable Integer elevatorId) {
+    public ResponseEntity<Boolean> releaseElevator(@PathVariable Integer elevatorId) {
         if (elevatorId < 0 || elevatorId >= numberOfElevators) {
-            return Boolean.FALSE;
+            return ResponseEntity.notFound().build();
         }
         elevatorControlSystem.releaseElevator(elevatorControlSystem.getElevators().get(elevatorId));
-        return Boolean.TRUE;
+        return ResponseEntity.ok(Boolean.TRUE);
     }
 
     @Override
