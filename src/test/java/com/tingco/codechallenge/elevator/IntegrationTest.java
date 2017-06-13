@@ -1,6 +1,5 @@
 package com.tingco.codechallenge.elevator;
 
-import com.jayway.awaitility.Awaitility;
 import com.tingco.codechallenge.elevator.controller.ElevatorEndpoint;
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 import com.tingco.codechallenge.elevator.service.Elevator;
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static com.jayway.awaitility.Awaitility.*;
+import static com.jayway.awaitility.Awaitility.await;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**

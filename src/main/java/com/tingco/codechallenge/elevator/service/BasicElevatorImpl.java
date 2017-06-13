@@ -2,12 +2,8 @@ package com.tingco.codechallenge.elevator.service;
 
 import com.google.common.eventbus.EventBus;
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.BECAME_IDLE;
-import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.MOVING_DOWN;
-import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.MOVING_UP;
+import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.*;
 
 /**
  * @author Lorinc Sonnevend
@@ -59,7 +55,7 @@ public class BasicElevatorImpl implements Elevator, Runnable {
             return;
         }
 
-        if(currentFloor==toFloor){
+        if (currentFloor == toFloor) {
             return;
         }
 

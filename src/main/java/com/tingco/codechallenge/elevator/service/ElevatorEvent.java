@@ -1,7 +1,5 @@
 package com.tingco.codechallenge.elevator.service;
 
-import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
-
 /**
  * @author Lorinc Sonnevend
  */
