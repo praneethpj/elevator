@@ -6,17 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.ELEVATOR_ASSIGNED;
-import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.ELEVATOR_RESETED;
-import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.PENDING_REQUEST;
-import static org.junit.Assert.*;
+import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -33,10 +31,10 @@ public class BasicElevatorControlSystemImplTest {
     private BasicElevatorControlSystemImpl controlSystem;
 
     @Test
-    public void assignRequestToElevator(){
+    public void assignRequestToElevator() {
         //given
-        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(0, 0, 10);
-        BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 0, 10);
+        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(0, 0, 10, eventBus);
+        BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 0, 10, eventBus);
         passengerElevator2.moveElevator(9);
         List<Elevator> elevators = new ArrayList<>();
         elevators.add(passengerElevator);
@@ -49,7 +47,7 @@ public class BasicElevatorControlSystemImplTest {
     }
 
     @Test
-    public void returnNullIfNoElevatorIsAvailable(){
+    public void returnNullIfNoElevatorIsAvailable() {
         //given
         controlSystem.setElevators(Collections.emptyList());
         //when
@@ -63,9 +61,9 @@ public class BasicElevatorControlSystemImplTest {
     }
 
     @Test
-    public void releaseElevatorResetsTheElevatorsState(){
+    public void releaseElevatorResetsTheElevatorsState() {
         //given
-        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(1, 0, 10);
+        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(1, 0, 10, eventBus);
         List<Elevator> elevators = Collections.singletonList(passengerElevator);
         controlSystem.setElevators(elevators);
         //when
@@ -82,10 +80,10 @@ public class BasicElevatorControlSystemImplTest {
     }
 
     @Test
-    public void assignRequestToIdleElevator(){
+    public void assignRequestToIdleElevator() {
         //given
-        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(0, 0, 10);
-        BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 0, 10);
+        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(0, 0, 10, eventBus);
+        BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 0, 10, eventBus);
         List<Elevator> elevators = new ArrayList<>();
         elevators.add(passengerElevator);
         elevators.add(passengerElevator2);
@@ -110,10 +108,10 @@ public class BasicElevatorControlSystemImplTest {
     }
 
     @Test
-    public void assignElevatorCloserToTarget(){
+    public void assignElevatorCloserToTarget() {
         //given
-        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(0, 0, 10);
-        BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 5, 10);
+        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(0, 0, 10, eventBus);
+        BasicElevatorImpl passengerElevator2 = new BasicElevatorImpl(1, 5, 10, eventBus);
         List<Elevator> elevators = new ArrayList<>();
         elevators.add(passengerElevator);
         elevators.add(passengerElevator2);
@@ -133,9 +131,9 @@ public class BasicElevatorControlSystemImplTest {
     }
 
     @Test
-    public void stopForOneTurnAfterFulfillingAllRequests(){
+    public void stopForOneTurnAfterFulfillingAllRequests() {
         //given
-        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(1, 0, 10);
+        BasicElevatorImpl passengerElevator = new BasicElevatorImpl(1, 0, 10, eventBus);
         List<Elevator> elevators = Collections.singletonList(passengerElevator);
         controlSystem.setElevators(elevators);
         //when

@@ -1,8 +1,13 @@
 package com.tingco.codechallenge.elevator.service;
 
+import com.google.common.eventbus.EventBus;
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.BECAME_IDLE;
+import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.MOVING_DOWN;
+import static com.tingco.codechallenge.elevator.service.ElevatorEvent.EventType.MOVING_UP;
 
 /**
  * @author Lorinc Sonnevend
@@ -14,14 +19,16 @@ public class BasicElevatorImpl implements Elevator, Runnable {
     private int currentFloor;
     private int minFloor;
     private int maxFloor;
+    private EventBus eventBus;
     private int addressedFloor;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BasicElevatorImpl(int id, int minFloor, int maxFloor) {
+    public BasicElevatorImpl(int id, int minFloor, int maxFloor, EventBus eventBus) {
         this.id = id;
         this.minFloor = minFloor;
         this.maxFloor = maxFloor;
+        this.eventBus = eventBus;
         this.direction = ElevatorDirection.NONE;
         this.currentFloor = minFloor;
         this.addressedFloor = minFloor;
@@ -92,15 +99,30 @@ public class BasicElevatorImpl implements Elevator, Runnable {
 
         if (direction.equals(ElevatorDirection.UP)) {
             currentFloor++;
+            eventBus.post(new ElevatorEventBuilder()
+                    .setEventType(MOVING_UP)
+                    .setElevatorId(getId())
+                    .createElevatorEvent());
+            //TODO remove
             logger.info(this.toString());
         } else if (direction.equals(ElevatorDirection.DOWN)) {
             currentFloor--;
+            eventBus.post(new ElevatorEventBuilder()
+                    .setEventType(MOVING_DOWN)
+                    .setElevatorId(getId())
+                    .createElevatorEvent());
+            //TODO remove
             logger.info(this.toString());
         }
 
         // if the elevator has no more floors to address, stop it
         if (!direction.equals(ElevatorDirection.NONE) && currentFloor == addressedFloor) {
             setDirection(ElevatorDirection.NONE);
+            eventBus.post(new ElevatorEventBuilder()
+                    .setEventType(BECAME_IDLE)
+                    .setElevatorId(getId())
+                    .createElevatorEvent());
+            //TODO remove
             logger.info(this.toString());
         }
     }

@@ -61,7 +61,7 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
     @PostConstruct
     public void setUpElevators() {
         for (int i = 0; i < numberOfElevators; i++) {
-            BasicElevatorImpl basicElevator = new BasicElevatorImpl(i, minFloor, maxFloor);
+            BasicElevatorImpl basicElevator = new BasicElevatorImpl(i, minFloor, maxFloor, eventBus);
             elevators.add(basicElevator);
             taskExecutor.scheduleAtFixedRate(basicElevator, 1, 1, TimeUnit.SECONDS);
         }

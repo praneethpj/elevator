@@ -1,7 +1,9 @@
 package com.tingco.codechallenge.elevator.service;
 
+import com.google.common.eventbus.EventBus;
 import com.tingco.codechallenge.elevator.enums.ElevatorDirection;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,7 +18,7 @@ public class BasicElevatorImplTest {
     private int maxFloor = 10;
 
     //given
-    private BasicElevatorImpl elevator = new BasicElevatorImpl(1, minFloor, maxFloor);
+    private BasicElevatorImpl elevator = new BasicElevatorImpl(1, minFloor, maxFloor, Mockito.mock(EventBus.class));
 
     @Test
     public void directionIsNoneWhenInitialized() {
