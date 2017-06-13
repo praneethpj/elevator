@@ -38,10 +38,4 @@ public interface ElevatorControlSystem {
      */
     void releaseElevator(Elevator elevator);
 
-
-    /**
-     * Report requests waiting to be served
-     *
-     */
-    Queue<Integer> getPendingRequests();
 }

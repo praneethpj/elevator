@@ -119,7 +119,6 @@ public class BasicElevatorControlSystemImpl implements ElevatorControlSystem {
         }
     }
 
-    @Override
     public Queue<Integer> getPendingRequests() {
         return pendingRequests;
     }
