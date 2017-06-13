@@ -11,9 +11,31 @@ import java.util.List;
  */
 public interface ElevatorEndpoint {
 
+    /**
+     * Request {@link Elevator} to floor
+     *
+     * @return Requested elevator or null
+     */
     Elevator requestElevator(Integer toFloor);
 
+    /**
+     * Report list of  {@link Elevator}
+     *
+     * @return list of elevators
+     */
     List<Elevator> getElevators();
 
+    /**
+     * Release {@link Elevator}
+     *
+     * @return whether release was successful
+     */
+    Boolean getElevators(Integer elevatorId);
+
+    /**
+     * Ping service to test if we are alive.
+     *
+     * @return String pong
+     */
     String ping();
 }

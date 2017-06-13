@@ -3,6 +3,7 @@ package com.tingco.codechallenge.elevator.controller;
 import com.tingco.codechallenge.elevator.service.Elevator;
 import com.tingco.codechallenge.elevator.service.ElevatorControlSystem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,9 @@ import java.util.List;
 @RequestMapping("/rest/v1")
 public final class ElevatorEndpointImpl implements ElevatorEndpoint {
 
+    @Value("${com.tingco.elevator.numberofelevators}")
+    private int numberOfElevators;
+
     private final ElevatorControlSystem elevatorControlSystem;
 
     @Autowired
@@ -26,33 +30,28 @@ public final class ElevatorEndpointImpl implements ElevatorEndpoint {
         this.elevatorControlSystem = elevatorControlSystem;
     }
 
-    /**
-     * Request {@link Elevator} to floor
-     *
-     * @return Requested elevator or null
-     */
     @Override
     @RequestMapping(value = "/request/{toFloor}", method = RequestMethod.POST)
     public Elevator requestElevator(@PathVariable Integer toFloor) {
         return elevatorControlSystem.requestElevator(toFloor);
     }
 
-    /**
-     * Report list of  {@link Elevator}
-     *
-     * @return list of elevators
-     */
     @Override
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<Elevator> getElevators() {
         return elevatorControlSystem.getElevators();
     }
 
-    /**
-     * Ping service to test if we are alive.
-     *
-     * @return String pong
-     */
+    @Override
+    @RequestMapping(value = "/release/{elevatorId}", method = RequestMethod.POST)
+    public Boolean getElevators(@PathVariable Integer elevatorId) {
+        if (elevatorId < 0 || elevatorId >= numberOfElevators) {
+            return Boolean.FALSE;
+        }
+        elevatorControlSystem.releaseElevator(elevatorControlSystem.getElevators().get(elevatorId));
+        return Boolean.TRUE;
+    }
+
     @Override
     @RequestMapping(value = "/ping", method = RequestMethod.GET)
     public String ping() {
